@@ -1,4 +1,7 @@
 {
   "name": "mobdoc",
-  "displayName": "mobdoc"
+  "displayName": "mobdoc",
+  "androidStatusBar": {
+    "barStyle": "light-content"
+  }
 }

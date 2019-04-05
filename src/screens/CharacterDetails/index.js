@@ -38,7 +38,6 @@ const CharacterDetails = ({ navigation }) => {
         leftElement="arrow-back"
         onLeftElementPress={() => navigation.goBack()}
         centerElement={`Personagem: ${name}`}
-        style={{ backgroundColor: '#1D3062' }}
       />
       <Content>
         <Title>Detalhes</Title>

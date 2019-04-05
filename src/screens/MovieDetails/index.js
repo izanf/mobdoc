@@ -69,7 +69,6 @@ class MovieDetails extends Component {
           leftElement="arrow-back"
           onLeftElementPress={() => this.goBack()}
           centerElement={`Filme: ${title}`}
-          style={{ backgroundColor: '#1D3062' }}
         />
         <Content>
           <Details>
@@ -91,13 +90,13 @@ class MovieDetails extends Component {
             </Group>
           </Details>
           <Title>Personagens</Title>
-            {loading ? <Loading /> : (
-              <FlatList
-                data={characters}
-                renderItem={item => <ListItem data={item} />}
-                keyExtractor={(_, index) => index.toString()}
-              />
-            )}
+          {loading ? <Loading /> : (
+            <FlatList
+              data={characters}
+              renderItem={item => <ListItem data={item} />}
+              keyExtractor={(_, index) => index.toString()}
+            />
+          )}
         </Content>
       </Wrapper>
     );

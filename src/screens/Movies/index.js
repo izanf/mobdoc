@@ -15,14 +15,31 @@ flex: 1;
 `;
 
 class Movies extends Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      search: ''
+    }
+  }
+
   componentDidMount () {
     const { fetchMovies } = this.props;
 
     fetchMovies();
   }
 
+  filterMovies = () => {
+    const { movies } = this.props;
+    const { search } = this.state;
+    const regex = new RegExp(`${search}`, 'gi');
+
+    return movies.filter(movie => movie.title.match(regex));
+  }
+
   render () {
     const { loading, movies } = this.props;
+    const filteredMovies = this.filterMovies(movies);
 
     return (
       <Wrapper>
@@ -31,12 +48,13 @@ class Movies extends Component {
           searchable={{
             autoFocus: true,
             placeholder: 'Search',
+            onChangeText: search => this.setState({ search }),
+            onSearchClosed: () => this.setState({ search: '' })
           }}
-          style={{ backgroundColor: '#1D3062' }}
         />
         {loading ? <Loading /> : (
           <FlatList
-            data={movies}
+            data={filteredMovies}
             renderItem={item => <ListItem data={item} />}
             keyExtractor={(_, index) => index.toString()}
           />
