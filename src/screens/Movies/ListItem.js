@@ -5,7 +5,6 @@ import { withNavigation } from 'react-navigation';
 const ListItem = ({ data: { item: movie }, navigation }) => {
   return (
     <Wrapper
-      key={movie['episode_id']}
       divider
       centerElement={{
         primaryText: movie.title,

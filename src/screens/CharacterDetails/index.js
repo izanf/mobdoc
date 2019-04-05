@@ -58,7 +58,7 @@ const CharacterDetails = ({ navigation }) => {
           <Item>Cor do cabelo: </Item><Value>{hair_color}</Value>
         </Group>
         <Group>
-          <Item>Peso: </Item><Value>{`${mass}lbs`}</Value>
+          <Item>Peso: </Item><Value>{`${mass}kg`}</Value>
         </Group>
         <Group>
           <Item>Cor: </Item><Value>{skin_color}</Value>

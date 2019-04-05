@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Toolbar } from 'react-native-material-ui';
+import styled from 'styled-components/native';
 
 import { fetchMovies } from './../../reducers/movies';
 
 import ListItem from './ListItem';
+import Loading from './../../components/Loading';
+
+const Wrapper = styled.View`
+flex: 1;
+`;
 
 class Movies extends Component {
   componentDidMount () {
@@ -16,10 +22,10 @@ class Movies extends Component {
   }
 
   render () {
-    const { movies } = this.props;
+    const { loading, movies } = this.props;
 
     return (
-      <View>
+      <Wrapper>
         <Toolbar
           centerElement="Filmes Starwars"
           searchable={{
@@ -28,12 +34,14 @@ class Movies extends Component {
           }}
           style={{ backgroundColor: '#1D3062' }}
         />
-        <FlatList
-          data={movies}
-          renderItem={item => <ListItem data={item} />}
-          keyExtractor={(_, index) => index.toString()}
-        />
-      </View>
+        {loading ? <Loading /> : (
+          <FlatList
+            data={movies}
+            renderItem={item => <ListItem data={item} />}
+            keyExtractor={(_, index) => index.toString()}
+          />
+        )}
+      </Wrapper>
     );
   }
 }

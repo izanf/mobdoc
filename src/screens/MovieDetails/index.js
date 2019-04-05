@@ -4,15 +4,21 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components/native';
 
-import { fetchCharacter } from './../../reducers/characters';
+import { fetchCharacters, resetCharacters } from './../../reducers/characters';
+
+import Loading from './../../components/Loading';
+import ListItem from './ListItem';
 
 const Wrapper = styled.View`
 flex: 1;
 `;
 
 const Content = styled.ScrollView`
-padding: 0 15px;
 flex: 1;
+`;
+
+const Details = styled.View`
+padding: 0 15px;
 `;
 
 const Group = styled.View`
@@ -33,61 +39,65 @@ text-align: center;
 padding: 20px 0 10px;
 `;
 
-const Characters = styled.View`
-margin-bottom: 15px;
-`;
-
-const TouchCharacter = styled.TouchableHighlight``;
-
-const Character = styled(Value)``;
+const FlatList = styled.FlatList``;
 
 class MovieDetails extends Component {
   componentDidMount () {
-    const { navigation, fetchCharacter } = this.props;
+    const { navigation, fetchCharacters } = this.props;
     const { characters } = navigation.getParam('movie');
 
-    characters.map(item => fetchCharacter(item));
+    fetchCharacters(characters);
   }
 
+  goBack = () => {
+    const { navigation, resetCharacters } = this.props;
+
+    resetCharacters();
+    navigation.goBack();
+  }
+
+  formatDate = date =>
+    Intl.DateTimeFormat('pt-BR').format(new Date(date))
+
   render () {
-    const { navigation, characters } = this.props;
+    const { loading, navigation, characters } = this.props;
     const { title, episode_id, director, producer, release_date, opening_crawl } = navigation.getParam('movie');
 
     return (
       <Wrapper>
         <Toolbar
           leftElement="arrow-back"
-          onLeftElementPress={() => navigation.goBack()}
+          onLeftElementPress={() => this.goBack()}
           centerElement={`Filme: ${title}`}
           style={{ backgroundColor: '#1D3062' }}
         />
         <Content>
-          <Title>Detalhes</Title>
-          <Group>
-            <Item>Episodio número: </Item><Value>{episode_id}</Value>
-          </Group>
-          <Group>
-            <Item>Diretor: </Item><Value>{director}</Value>
-          </Group>
-          <Group>
-            <Item>Produtores: </Item><Value>{producer}</Value>
-          </Group>
-          <Group>
-            <Item>Data de lançamento: </Item><Value>{release_date}</Value>
-          </Group>
-          <Group>
-            <Item>Descrição: </Item><Value>{opening_crawl}</Value>
-          </Group>
+          <Details>
+            <Title>Detalhes</Title>
+            <Group>
+              <Item>Episodio número: </Item><Value>{episode_id}</Value>
+            </Group>
+            <Group>
+              <Item>Diretor: </Item><Value>{director}</Value>
+            </Group>
+            <Group>
+              <Item>Produtores: </Item><Value>{producer}</Value>
+            </Group>
+            <Group>
+              <Item>Data de lançamento: </Item><Value>{this.formatDate(release_date)}</Value>
+            </Group>
+            <Group>
+              <Item>Descrição: </Item><Value>{opening_crawl}</Value>
+            </Group>
+          </Details>
           <Title>Personagens</Title>
-          <Characters>
-            {characters.map((character) => (
-              <TouchCharacter
-                onPress={() => navigation.navigate('CharacterDetails', { character })}
-              >
-                <Character>{character.name}</Character>
-              </TouchCharacter>
-            ))}
-          </Characters>
+            {loading ? <Loading /> : (
+              <FlatList
+                data={characters}
+                renderItem={item => <ListItem data={item} />}
+                keyExtractor={(_, index) => index.toString()}
+              />
+            )}
         </Content>
       </Wrapper>
     );
@@ -101,5 +111,5 @@ export default connect(state => ({
   characters: state.characters.data
 }),
 dispatch => bindActionCreators({
-  fetchCharacter
+  fetchCharacters, resetCharacters
 }, dispatch))(MovieDetails);

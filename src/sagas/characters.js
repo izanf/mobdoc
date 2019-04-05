@@ -1,9 +1,9 @@
-import { put, takeEvery, call } from 'redux-saga/effects';
+import { put, takeEvery, call, all } from 'redux-saga/effects';
 import Api from './../services/Api';
 
 import { Types } from '../reducers/characters';
 
-export function* fetchCharacter({ url }) {
+function* fetchCharacter(url) {
   try {
     const response = yield call(Api.fetchCharacter, url);
 
@@ -16,6 +16,12 @@ export function* fetchCharacter({ url }) {
   }
 }
 
+export function* fetchCharacters({ characters }) {
+  yield all(characters.map(fetchCharacter));
+
+  yield put({ type: Types.FETCH_CHARACTERS_FINALLY });
+}
+
 export default function* root() {
-  yield takeEvery(Types.FETCH_CHARACTERS, fetchCharacter);
+  yield takeEvery(Types.FETCH_CHARACTERS, fetchCharacters);
 };
